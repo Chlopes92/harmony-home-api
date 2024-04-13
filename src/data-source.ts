@@ -19,7 +19,7 @@ const AppDataSource = new DataSource({
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     entities: [Category, SubCategory, Product, User, Adress, Order, OrderProduct],
-    synchronize: true,
+    synchronize: false,
 });
 
 export default AppDataSource;
