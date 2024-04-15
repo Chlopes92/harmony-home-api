@@ -2,10 +2,10 @@ import express from 'express';
 import cors from 'cors';
 import AppDataSource from './data-source';
 import userRouter from './routes/UserRoutes';
+import categoryRouter from './routes/CategoryRoutes';
 // import categoryRouter from './routes/CategoryRoutes';
 // import subCategoryRouter from './routes/SubCategoryRoutes';
 // import productRouter from './routes/ProductRoutes';
-// import userRouter from './routes/UserRoutes';
 
 AppDataSource.initialize().then(() => {
     const app = express();
@@ -18,6 +18,7 @@ AppDataSource.initialize().then(() => {
     });
 
     app.use("/api/users", userRouter);
+    app.use("/api/category", categoryRouter);
 
     app.listen(process.env.PORT, () => {
         console.log(`Server running on port ${process.env.PORT}`);
