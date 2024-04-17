@@ -5,31 +5,31 @@ import jwt from 'jsonwebtoken';
 
 export class UserService {
     // private signifie que c'est que pour cette classe
-    private userRepository = AppDataSource.getRepository(User);
+    private userRepository = AppDataSource.getRepository(User); // Accès au repository User pour les opérations CRUD.
 
     async getAll() {
+        // Récupère tous les utilisateurs.
         console.log("UserService - GetAll");
         return this.userRepository.find();
     }
 
     async getById(id: number) {
+        // Récupère un utilisateur par son ID.
         console.log("UserService - GetById");
         return this.userRepository.findOneBy({ id: id });
     }
 
     async signup(name:string, firstname: string, email: string, password: string, phone: string) {
         console.log("UserService - Sign up");
-
-        // Vérifiez si un utilisateur avec cet email existe déjà
+        // Inscription d'un nouvel utilisateur après vérification de l'unicité de l'email.
         const existingUser = await this.userRepository.findOneBy({ email: email });
         if (existingUser) {
             console.log("UserService - Email already exists");
             return { message: "Email already exists" }; 
         }
         
-        // hasher le mot de passe
+        // Hash du mot de passe pour la sécurité.
         const hashedPassword = await bcrypt.hash(password, 10);
-
         const newUser = this.userRepository.create({
             name: name,
             firstname: firstname,
@@ -41,17 +41,17 @@ export class UserService {
         return await this.userRepository.save(newUser);
     }
 
-    //  Methode de login
-  async login(email: string, password: string) {
-        // on recupere le user
+    // Authentification de l'utilisateur.
+    async login(email: string, password: string) {
+        // On recupere le user
         const user = await this.userRepository.findOneBy({email: email});
 
-        // je verifie si user existe
+        // Je verifie si user existe
         if(!user) {
             return { message: "Your email or password are incorrect" }; 
         }
 
-        // fonction compare va crypter le password recu et le comparer avec celui en base
+        // Fonction compare va crypter le password recu et le comparer avec celui en base
         const isPasswordValid = await bcrypt.compare(password, user.password!);
 
         if(!isPasswordValid) {
@@ -78,7 +78,7 @@ export class UserService {
 
     }
 
-    // modifier password
+    // Modification du mot de passe de l'utilisateur.
     async updatePassword(email: string, newPassword: string){
         console.log("UserService - Modify password");
 
@@ -103,7 +103,7 @@ export class UserService {
         
     }
 
-    // supprimer compte
+    // Suppression d'un utilisateur par son ID.
     async delete(id: string) {
         console.log("UserService - Delete");
         return this.userRepository.delete(id);

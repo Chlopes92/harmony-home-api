@@ -1,14 +1,19 @@
 import { Request, Response } from "express";
 import { UserService } from "../services/UserServices";
 export class UserController {
+
+    // Instanciation du UserService en l'assigniant à la propriété userService de la classe UserController.
+    // Cette instance est accessible uniquement dans cette classe.
     private userService =  new UserService();
 
+    // Récupère et affiche tous les utilisateurs.
     async display(req: Request, res: Response) {
         console.log("UserController - GetAll");
         const users = await this.userService.getAll();
         res.send({status: "OK", data: users});
     }
 
+    // Récupère un utilisateur par son ID.
     async getById(req: Request, res: Response) {
         console.log("UserController - GetByID");
         const user = await this.userService.getById(Number(req.params.id));
@@ -21,6 +26,7 @@ export class UserController {
         
     }
 
+    // Inscrit un nouvel utilisateur.
     async signup(req: Request, res: Response) {
         console.log("UserController - Sign Up");
  
@@ -39,32 +45,30 @@ export class UserController {
            
     }
 
-    // vérifier le mail, password et génerer le token
+    // Vérifier le mail, password et génerer le token.
     async login(req: Request, res: Response) {
         console.log("UserController - Login")
         const email = req.body.email;
         const password = req.body.password;
 
         // le service va verifier que email existe et password associé aussi, génére le token et le renvoie
-        const user = await this.userService.login(email, password);
-    
         const token = await this.userService.login(email, password);
 
         if(token) {
-            res.status(200).json({ token: token });
+            res.status(200).json({ email: email, token: token });
         } else {
             res.status(401).json({ message: "Invalid Email or Password!" });
         }
 
     }
 
-    // se déconnecter
+    // Se déconnecter
     async logout(req: Request, res:Response){
         console.log("UserController - Logout");
         res.status(200).send({status: "OK", message: "Logged out successfully" });
     }
 
-    // modify password
+    // Met à jour le mot de passe d'un utilisateur.
     async updatePassword(req: Request, res: Response) {
         console.log("UserController - Modify Password");
         const { email, password } = req.body;
@@ -82,7 +86,7 @@ export class UserController {
         res.json({ status: "OK", message: "Password changed successfully" });
     }
 
-     // supprimer le compte user
+     // Supprimer le compte de l'user.
      async deleteAccount(req:Request, res :Response){
         console.log("UserController - Delete Account")
         const user = await this.userService.delete(req.params.id);

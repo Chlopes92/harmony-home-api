@@ -2,8 +2,11 @@ import { Request, Response } from "express";
 import { CategoryService } from "../services/CategoryServices";
 
 export class CategoryController {
+    // Instanciation du CategoryService en l'assigniant à la propriété categoryService de la classe CategoryController.
+    // Cette instance est accessible uniquement dans cette classe.
     private categoryService = new CategoryService();
 
+    // Récupère et affiche tous les catégories.
     async getAll(req: Request, res: Response) {
         console.log("CategoryController - GetAll");
         const categories = await this.categoryService.getAll();
@@ -11,6 +14,7 @@ export class CategoryController {
       
     }
 
+    // Récupère une catégorie par son ID.
     async getById(req: Request, res: Response) {
         console.log("CategoryController - GetByID");
         const category = await this.categoryService.getById(Number(req.params.id));
