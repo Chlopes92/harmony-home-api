@@ -16,6 +16,19 @@ export class ProductController {
     }
 
     // Récupère un produit par son ID.
+    async getById(req: Request, res: Response) {
+        console.log("ProductController - GetById");
+        const productId = Number(req.params.id);
+        const product = await this.productService.getById(productId);
+        if(product) {
+            res.status(200).json({status: "OK", data: product});
+        } else {
+            res.status(401).json({ message: "This product doesn't exist!" });
+        }
+        
+    }
+
+    // Récupère un produit par l'ID de la sous-catégorie.
     async getBySubCategoryId(req: Request, res: Response) {
         console.log("ProductController - GetBySubCategoryId");
         const subCategoryId = Number(req.params.subCategoryId);

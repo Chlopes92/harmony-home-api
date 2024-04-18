@@ -11,6 +11,12 @@ export class ProductService {
     }
 
     // Récupère un produit par son ID.
+    async getById(id: number) {
+        console.log("ProductService - GetById");
+        return this.productRepository.findOneBy({ id: id });
+    }
+
+    // Récupère un produit par l'ID de la sous-catégorie.
     async getBySubCategoryId(subCategoryId: number) {
         console.log("ProductService - GetBySubCategoryId");
         return this.productRepository.find({ 
