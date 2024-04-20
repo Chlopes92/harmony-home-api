@@ -41,6 +41,7 @@ export class UserService {
         return await this.userRepository.save(newUser);
     }
 
+
     // Authentification de l'utilisateur.
     async login(email: string, password: string) {
         // On recupere le user
@@ -53,24 +54,26 @@ export class UserService {
 
         // Fonction compare va crypter le password recu et le comparer avec celui en base
         const isPasswordValid = await bcrypt.compare(password, user.password!);
-
         if(!isPasswordValid) {
             return { message: "Your email or password are incorrect" }; 
         }
 
-        // Générerer un token, on envoie un payload avec id et email, on envoit notre clé et il expire dans 1h
-        //verify signature c'est le password
-        // methode sign pour créer un token avec la technologie JWT
-        const token = jwt.sign({
-        id: user.id, email: user.email},
-        process.env.JWT_SECRET!, 
-        {expiresIn: "2h"});
+        const token = jwt.sign(
+            { id: user.id, email: user.email },
+            process.env.JWT_SECRET!,
+            { expiresIn: "2h" }
+        );
 
-        this.userRepository.save(user);
-        // on renvoit le token si email et password ok
-        // ce token contient des infos sur notre user
-        return token;
+        // Préparer les détails de l'utilisateur à renvoyer
+        const userDetails = {
+            id: user.id,
+            name: user.name,
+            firstname: user.firstname,
+            email: user.email,
+            phone: user.phone
+        };
 
+        return { token, user: userDetails };
     }
 
     // Se déconnecter

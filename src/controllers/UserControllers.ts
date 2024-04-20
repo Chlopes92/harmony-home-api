@@ -52,10 +52,10 @@ export class UserController {
         const password = req.body.password;
 
         // le service va verifier que email existe et password associé aussi, génére le token et le renvoie
-        const token = await this.userService.login(email, password);
+        const { token, user } = await this.userService.login(email, password);
 
-        if(token) {
-            res.status(200).json({ email: email, token: token });
+        if(token && user) {
+            res.status(200).json({  token, user });
         } else {
             res.status(401).json({ message: "Invalid Email or Password!" });
         }
