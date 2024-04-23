@@ -38,7 +38,7 @@ export class UserController {
         const createUser = await this.userService.signup(name, firstname, email, password, phone);
 
         if (createUser) {
-            res.status(201).json({status:"OK", message: "User created" });
+            res.status(201).json({ message: "User created", createUser: createUser });
         }else{
             res.status(409).json({ message: "You Failed !"});
         }
