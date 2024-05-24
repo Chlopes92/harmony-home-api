@@ -46,24 +46,20 @@ export class UserService {
     async login(email: string, password: string) {
         // On recupere le user
         const user = await this.userRepository.findOneBy({email: email});
-
         // Je verifie si user existe
         if(!user) {
             return { message: "Your email or password are incorrect" }; 
         }
-
         // Fonction compare va crypter le password recu et le comparer avec celui en base
         const isPasswordValid = await bcrypt.compare(password, user.password!);
         if(!isPasswordValid) {
             return { message: "Your email or password are incorrect" }; 
         }
-
         const token = jwt.sign(
             { id: user.id, email: user.email },
             process.env.JWT_SECRET!,
             { expiresIn: "2h" }
         );
-
         // Préparer les détails de l'utilisateur à renvoyer
         const userDetails = {
             id: user.id,
@@ -72,7 +68,6 @@ export class UserService {
             email: user.email,
             phone: user.phone
         };
-
         return { token, user: userDetails };
     }
 

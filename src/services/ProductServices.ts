@@ -1,3 +1,4 @@
+import { Like } from "typeorm";
 import AppDataSource from "../data-source";
 import { Product } from "../entities/Product";
 
@@ -26,6 +27,17 @@ export class ProductService {
             }
                 
         });
+    }
+
+    // Rechercher des produits par leur titre
+    async getByTitle(title: string): Promise<Product[]> {
+        console.log("ProductService - GetByTitle", title);
+        const products = await this.productRepository
+            .createQueryBuilder("product")
+            .where("product.title ILIKE :title", { title: `%${title}%` }) // ILIKE pour insensible à la casse
+            .getMany();
+        console.log("Found products:", products);
+        return products;
     }
 
 }
