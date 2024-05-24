@@ -19,4 +19,10 @@ productRouter.get("/by-sub-category/:subCategoryId", (req, res) => {
     productController.getBySubCategoryId(req, res);
 });
 
+// Rechercher un product par son titre
+productRouter.get("/search/:title", (req, res) => {
+    console.log("ProductRouter - SearchByTitle");
+    productController.searchProduct(req, res)
+});
+
 export default productRouter; 

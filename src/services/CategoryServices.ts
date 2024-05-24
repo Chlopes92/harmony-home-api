@@ -7,8 +7,11 @@ export class CategoryService {
 
     // Récupère tous les catégories.
     async getAll() {
-        console.log("CategoryService - GetAll");
-        return this.categoryRepository.find();
+        console.log("CategoryService - GetAll");return this.categoryRepository.find({
+            order: {
+                id: "ASC"  // Tri par 'id' en ordre croissant
+            }
+        });
     }
 
     // Récupère une catégorie par son ID.
