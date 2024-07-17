@@ -69,27 +69,74 @@ export class UserController {
     }
 
     // Met à jour le mot de passe d'un utilisateur.
+    // async updatePassword(req: Request, res: Response) {
+    //     console.log("UserController - Modify Password");
+    //     const { email, password } = req.body;
+    
+    //     // Appeler le service pour mettre à jour le mot de passe
+    //     const newPassword = await this.userService.updatePassword(email, password);
+    
+    //     // Vérifier si une erreur a été retournée par le service
+    //     if (newPassword.error) {
+    //         console.log(newPassword.message); // Pour débogage
+    //         return res.status(404).json({ status: "Error", message: "User not found" });
+    //     }
+    
+    //     // Si tout va bien, envoyer une réponse de succès
+    //     res.json({ status: "OK", message: "Password changed successfully" });
+    // }
     async updatePassword(req: Request, res: Response) {
-        console.log("UserController - Modify Password");
-        const { email, password } = req.body;
-    
-        // Appeler le service pour mettre à jour le mot de passe
-        const newPassword = await this.userService.updatePassword(email, password);
-    
-        // Vérifier si une erreur a été retournée par le service
-        if (newPassword.error) {
-            console.log(newPassword.message); // Pour débogage
-            return res.status(404).json({ status: "Error", message: "User not found" });
-        }
-    
-        // Si tout va bien, envoyer une réponse de succès
-        res.json({ status: "OK", message: "Password changed successfully" });
-    }
+      console.log("UserController - Modify Password");
+      const { email, newPassword } = req.body;
 
-     // Supprimer le compte de l'user.
-     async deleteAccount(req:Request, res :Response){
-        console.log("UserController - Delete Account")
-        const user = await this.userService.delete(req.params.id);
-        res.status(200).send({ message: "Account delete" });
-    }
+      const updatePasswordResult = await this.userService.updatePassword(email, newPassword);
+
+      if (updatePasswordResult.error) {
+          console.log(updatePasswordResult.message);
+          return res.status(404).json({ status: "Error", message: "User not found" });
+      }
+
+      res.json({ status: "OK", message: "Password changed successfully" });
+  }
+
+  // Supprimer le compte de l'user.
+  async deleteAccount(req: Request, res: Response) {
+      console.log("UserController - Delete Account");
+      const user = await this.userService.delete(req.params.id);
+      res.status(200).send({ message: "Account deleted" });
+  }
+
+  async requestPasswordReset(req: Request, res: Response) {
+      const { email } = req.body;
+      try {
+          const user = await this.userService.findUserByEmail(email);
+          if (!user) {
+              return res.status(404).json({ message: 'Utilisateur non trouvé' });
+          }
+
+          res.status(200).json({ message: 'Email de réinitialisation envoyé' });
+      } catch (error) {
+          res.status(500).json({ message: 'Erreur lors de la demande de réinitialisation du mot de passe', error });
+      }
+  }
+
+  async resetPassword(req: Request, res: Response) {
+      const email = req.query.email as string;
+      const { newPassword } = req.body;
+      try {
+          if (!email) {
+              return res.status(400).json({ message: 'Email manquant' });
+          }
+
+          const user = await this.userService.findUserByEmail(email);
+          if (!user) {
+              return res.status(404).json({ message: 'Utilisateur non trouvé' });
+          }
+
+          await this.userService.updatePassword(email, newPassword);
+          res.status(200).json({ message: 'Mot de passe réinitialisé' });
+      } catch (error) {
+          res.status(500).json({ message: 'Erreur lors de la réinitialisation du mot de passe', error });
+      }
+  }
 }

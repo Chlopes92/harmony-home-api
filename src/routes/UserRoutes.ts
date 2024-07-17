@@ -46,4 +46,12 @@ userRouter.delete("/:id", (req, res) => {
     userController.deleteAccount(req, res); // Appelle la méthode deleteAccount de userController.
 });
 
+userRouter.post('/request-password-reset', (req, res) => {
+    userController.requestPasswordReset(req, res);
+});
+
+userRouter.patch('/reset-password', (req, res) => {
+    userController.resetPassword(req, res);
+});
+
 export default userRouter;

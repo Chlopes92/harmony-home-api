@@ -41,23 +41,22 @@ export class ProductController {
         
     }
     
-    // Rechercher des produits par leur titre
-    async searchProduct(req: Request, res: Response) {
-        const title = req.params.title;
-        console.log("Query parameter:", title);
-        try {
-            const products = await this.productService.getByTitle(title);
-            if (products.length > 0) {
-                res.status(200).json({ status: "OK", data: products });
-            } else {
-                res.status(404).json({ message: "No products found with the given title." });
-            }
-        } catch (error) {
-            console.error("Error searching for product by title:", error);
-            res.status(500).json({ message: 'Error searching for product by title', error });
-        }
+ // Rechercher des produits par leur titre
+ async searchProduct(req: Request, res: Response) {
+    const title = req.params.title;
+    console.log("Query parameter:", title);
+    try {
+      const products = await this.productService.getByTitle(title);
+      if (products.length > 0) {
+        res.status(200).json({ status: "OK", data: products });
+      } else {
+        res.status(404).json({ message: "No products found with the given title." });
+      }
+    } catch (error) {
+      console.error("Error searching for product by title:", error);
+      res.status(500).json({ message: 'Error searching for product by title', error });
     }
-        
+  }     
 
 
 }

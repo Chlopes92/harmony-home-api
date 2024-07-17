@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import AppDataSource from "../data-source";
 import { User } from "../entities/User";
 import jwt from 'jsonwebtoken';
+import { getRepository } from "typeorm";
 
 export class UserService {
     // private signifie que c'est que pour cette classe
@@ -77,33 +78,59 @@ export class UserService {
     }
 
     // Modification du mot de passe de l'utilisateur.
-    async updatePassword(email: string, newPassword: string){
+    // async updatePassword(email: string, newPassword: string){
+    //     console.log("UserService - Modify password");
+
+    //     // Récupérer l'utilisateur par son email
+    //     const user = await this.userRepository.findOneBy({ email });
+    //     if (!user) {
+    //         console.log("No user found with this email:", email);
+    //         return { error: true, message: "User not found" };
+    //     }
+
+    //     // Hasher le nouveau mot de passe
+    //     const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    //     // Mettre à jour le mot de passe de l'utilisateur
+    //     console.log("Before update: ", user.email);
+    //     user.password = hashedPassword;
+    //     console.log("After update: ", user.email);
+
+    //     // Sauvegarder l'utilisateur mis à jour
+    //     await this.userRepository.save(user);
+    //     return { message: "Password updated successfully" };
+        
+    // }
+    async updatePassword(email: string, newPassword: string) {
         console.log("UserService - Modify password");
 
-        // Récupérer l'utilisateur par son email
         const user = await this.userRepository.findOneBy({ email });
         if (!user) {
             console.log("No user found with this email:", email);
             return { error: true, message: "User not found" };
         }
 
-        // Hasher le nouveau mot de passe
         const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-        // Mettre à jour le mot de passe de l'utilisateur
         console.log("Before update: ", user.email);
         user.password = hashedPassword;
         console.log("After update: ", user.email);
 
-        // Sauvegarder l'utilisateur mis à jour
         await this.userRepository.save(user);
         return { message: "Password updated successfully" };
-        
     }
 
-    // Suppression d'un utilisateur par son ID.
     async delete(id: string) {
         console.log("UserService - Delete");
         return this.userRepository.delete(id);
     }
+
+    async findUserByEmail(email: string): Promise<User | null> {
+        const user = await this.userRepository
+            .createQueryBuilder("user")
+            .where("user.email = :email", { email })
+            .getOne();
+        return user || null;
+    }
+
 }

@@ -30,14 +30,19 @@ export class ProductService {
     }
 
     // Rechercher des produits par leur titre
-    async getByTitle(title: string): Promise<Product[]> {
-        console.log("ProductService - GetByTitle", title);
-        const products = await this.productRepository
-            .createQueryBuilder("product")
-            .where("product.title ILIKE :title", { title: `%${title}%` }) // ILIKE pour insensible à la casse
-            .getMany();
-        console.log("Found products:", products);
-        return products;
+  async getByTitle(title: string): Promise<Product[]> {
+    console.log("ProductService - GetByTitle", title);
+    try {
+      const products = await this.productRepository
+        .createQueryBuilder("product")
+        .where("product.title ILIKE :title", { title: `%${title}%` }) // ILIKE pour insensible à la casse
+        .getMany();
+      console.log("Found products:", products);
+      return products;
+    } catch (error) {
+      console.error("Error in ProductService - GetByTitle:", error);
+      throw error;
     }
+  }
 
 }
