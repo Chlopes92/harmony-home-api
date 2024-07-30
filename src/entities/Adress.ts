@@ -25,7 +25,7 @@ export class Adress {
     @Column()
     postcode: string;
 
-    @OneToOne(() => User, (user) => user.adress) // specify inverse side as a second parameter
+    @OneToOne(() => User, (user) => user.adress) 
     user: User
 
 }
